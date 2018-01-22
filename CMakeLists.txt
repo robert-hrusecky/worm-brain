@@ -29,7 +29,8 @@ find_library(SDL2_MIXER_LIBRARIES
 )
 
 # SnowEngine Library
-set(SNOW_ENGINE_LIBRARY "-L${PROJECT_SOURCE_DIR}/lib/snow-engine/debug/ -lSnowEngine")
+set(SNOW_ENGINE_LIBRARY "-L${PROJECT_SOURCE_DIR}/lib/snow-engine/release/ -lSnowEngine")
+set(SNOW_ENGINE_DEBUG_LIBRARY "-L${PROJECT_SOURCE_DIR}/lib/snow-engine/debug/ -lSnowEngine")
 
 # Find Box2D
 find_library(BOX2D_LIBRARIES
