@@ -41,6 +41,19 @@ find_library(BOX2D_LIBRARIES
 # Inlcude dirs
 include_directories("${PROJECT_SOURCE_DIR}/lib/include")
 
-set(srcs Button.cpp Button.h Creature.cpp Creature.h Game.cpp Game.h GenerationScreen.cpp GenerationScreen.h main.cpp MainScreen.cpp MainScreen.h Matrix.h MultiGenScreen.cpp MultiGenScreen.h NeuralNetwork.cpp NeuralNetwork.h Population.cpp Population.h PreviewWindow.cpp PreviewWindow.h)
+set(srcs
+  Button.cpp Button.h
+  Creature.cpp Creature.h
+  Game.cpp Game.h
+  GenerationScreen.cpp GenerationScreen.h
+  main.cpp
+  MainScreen.cpp MainScreen.h
+  Matrix.h
+  MultiGenScreen.cpp MultiGenScreen.h
+  NeuralNetwork.cpp NeuralNetwork.h
+  Population.cpp Population.h
+  PreviewWindow.cpp PreviewWindow.h
+  ThreadPool.h ThreadPool.tpp
+)
 
 add_subdirectory(src)

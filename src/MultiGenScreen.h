@@ -14,12 +14,11 @@
 #include <snow/IMainGame.h>
 #include <snow/InputManager.h>
 #include <vector>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
 
 #include "Creature.h"
 #include "Population.h"
+#include "ThreadPool.h"
+
 namespace EvolutionSimulator
 {
 
@@ -38,16 +37,12 @@ private:
 	SnowEngine::Camera2D m_camera;
 	SnowEngine::DebugRenderer m_renderer;
 	float m_angle = 0.0f;
+	bool m_finished = false;
 
-	std::vector<std::thread> m_workerThreads;
-	std::mutex m_mutex;
-	std::condition_variable m_cond;
-	unsigned int m_waitingThreads = 0;
-	bool m_joinRequested = false;
+	ThreadPool<unsigned int*> m_threads;
+	std::vector<unsigned int*> m_data;
 
-//	std::vector<Creature*> m_queue;
 	Population* m_population = nullptr;
-	std::vector<int> m_queue;
 };
 
 } /* namespace EvolutionSimulator */
