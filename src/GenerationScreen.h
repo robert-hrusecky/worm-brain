@@ -24,6 +24,7 @@ class GenerationScreen : public SnowEngine::IGameScreen
 {
 public:
 	static const unsigned int FRAMES = 900;
+	static constexpr float DELTA_TIME = 0.016666667f;
 	GenerationScreen(SnowEngine::IMainGame* game);
 	virtual ~GenerationScreen();
 

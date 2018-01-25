@@ -33,14 +33,16 @@ public:
 	void onEvent(const SDL_Event& evnt);
 	void draw();
 	void setPopulation(Population& population);
+
+	static const int GENS = 1000;
 private:
+	static void doGeneration(Creature* creature);
 	SnowEngine::Camera2D m_camera;
 	SnowEngine::DebugRenderer m_renderer;
 	float m_angle = 0.0f;
-	bool m_finished = false;
 
-	ThreadPool<unsigned int*> m_threads;
-	std::vector<unsigned int*> m_data;
+	unsigned int m_gensLeft;
+	ThreadPool<Creature*> m_threads;
 
 	Population* m_population = nullptr;
 };

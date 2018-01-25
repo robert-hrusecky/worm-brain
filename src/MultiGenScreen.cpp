@@ -7,14 +7,15 @@
 
 #include "MultiGenScreen.h"
 #include "ThreadPool.h"
+#include "GenerationScreen.h"
+#include <Box2D/Box2D.h>
 #include <iostream>
-
-void func(unsigned int* ptr);
 
 namespace EvolutionSimulator
 {
 
-MultiGenScreen::MultiGenScreen(SnowEngine::IMainGame* game) : SnowEngine::IGameScreen(game), m_threads(&func)
+MultiGenScreen::MultiGenScreen(SnowEngine::IMainGame* game)
+	: SnowEngine::IGameScreen(game), m_threads(&MultiGenScreen::doGeneration)
 {
 	m_camera.init(m_game->getScreenWidth(), m_game->getScreenHeight());
 	m_camera.update();
@@ -26,36 +27,28 @@ MultiGenScreen::~MultiGenScreen() {}
 void MultiGenScreen::onStart()
 {
 	m_threads.start();
-
-	for (unsigned int i = 0; i < 20; i++)
-	{
-		unsigned int* val = new unsigned int;
-		*val = 40;
-		m_data.push_back(val);
-	}
-
-	m_threads.enqueue(m_data);
+	m_gensLeft = GENS;
+	m_threads.enqueue(m_population->getCreatures());
 }
 
-void MultiGenScreen::onPause()
-{
-	m_threads.stop(true);
-	for (auto val : m_data)
-	{
-		delete val;
-	}
-}
+void MultiGenScreen::onPause() { m_threads.stop(true); }
 
 void MultiGenScreen::update(float deltaTime, SnowEngine::InputManager& inputManager)
 {
 	m_angle += deltaTime / 1000.0f;
 	m_camera.update();
-	if (!m_finished && m_threads.isDone())
+	if (m_threads.isDone())
 	{
-		m_finished = true;
-		for (auto val : m_data)
+		m_gensLeft--;
+		if (m_gensLeft > 0)
 		{
-			std::cout << *val << std::endl;
+			m_population->sort();
+			m_population->evolve();
+			m_threads.enqueue(m_population->getCreatures());
+		}
+		else
+		{
+			m_game->setActiveScreen("MainScreen");
 		}
 	}
 }
@@ -71,18 +64,35 @@ void MultiGenScreen::draw()
 
 void MultiGenScreen::setPopulation(Population& population) { m_population = &population; }
 
-} /* namespace EvolutionSimulator */
-
-unsigned int fib(unsigned int n)
+void MultiGenScreen::doGeneration(Creature* creature)
 {
-	if (n < 2)
+	b2BodyDef groundDef;
+	groundDef.position.Set(0.0f, -2.5f);
+	groundDef.type = b2_staticBody;
+
+	b2PolygonShape groundShape;
+	groundShape.SetAsBox(100.0f, 2.0f);
+	b2FixtureDef groundFixtrueDef;
+	groundFixtrueDef.shape = &groundShape;
+	groundFixtrueDef.density = 1.0;
+	groundFixtrueDef.friction = 1.0f;
+
+	b2Vec2 gravity(0.0f, -9.81f);
+
+	b2World* world = new b2World(gravity);
+	b2Body* body = world->CreateBody(&groundDef);
+	body->CreateFixture(&groundFixtrueDef);
+	creature->add(world);
+
+	for (unsigned int i = 0; i < GenerationScreen::FRAMES; i++)
 	{
-		return n;
+		creature->update();
+		world->Step(GenerationScreen::DELTA_TIME, 8, 3);
 	}
+	creature->assignFitness();
+	creature->clearBody();
 
-	return fib(n - 1) + fib(n - 2);
+	delete world;
 }
 
-void func(unsigned int* ptr) {
-	*ptr = fib(*ptr);
-}
+} /* namespace EvolutionSimulator */

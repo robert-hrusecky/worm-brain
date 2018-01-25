@@ -69,7 +69,7 @@ void MainScreen::update(float deltaTime, SnowEngine::InputManager& inputManager)
 		MultiGenScreen* genScreen = (MultiGenScreen*) m_game->getScreen("MultiGenScreen");
 		genScreen->setPopulation(m_population);
 		m_game->setActiveScreen("MultiGenScreen");
-		m_generation++;
+		m_generation += MultiGenScreen::GENS;
 	}
 }
 

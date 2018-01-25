@@ -6,7 +6,7 @@
  */
 
 #include "GenerationScreen.h"
-
+#include <iostream>
 #include <random>
 
 namespace EvolutionSimulator
@@ -77,7 +77,7 @@ void GenerationScreen::update(float deltaTime, SnowEngine::InputManager& inputMa
 		for (unsigned int i = 0; i < m_creatures.size(); i++)
 		{
 			m_creatures[i]->update();
-			m_worlds[i]->Step(deltaTime / 1000.0f, 8, 3);
+			m_worlds[i]->Step(DELTA_TIME, 8, 3);
 		}
 		b2Vec2 cameraTarget(0.0f, 0.0f);
 		for (unsigned int i = 0; i < m_creatures.size(); i++)

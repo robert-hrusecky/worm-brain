@@ -55,6 +55,7 @@ template <typename T> void ThreadPool<T>::stop(bool force)
 	{
 		thread.join();
 	}
+	m_threads.clear();
 }
 
 template <typename T> void ThreadPool<T>::enqueue(const std::vector<T>& data)
