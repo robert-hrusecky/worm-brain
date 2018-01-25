@@ -25,7 +25,7 @@ MultiGenScreen::~MultiGenScreen() {}
 
 void MultiGenScreen::onStart()
 {
-	m_threads.start(2);
+	m_threads.start();
 
 	for (unsigned int i = 0; i < 20; i++)
 	{
@@ -39,7 +39,7 @@ void MultiGenScreen::onStart()
 
 void MultiGenScreen::onPause()
 {
-	m_threads.stop();
+	m_threads.stop(true);
 	for (auto val : m_data)
 	{
 		delete val;

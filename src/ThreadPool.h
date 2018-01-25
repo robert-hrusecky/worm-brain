@@ -22,7 +22,7 @@ public:
 	{
 		if (isRunning())
 		{
-			stop(); 
+			stop(true); 
 		}
 	}
 
@@ -41,6 +41,7 @@ private:
 
 	std::queue<T> m_queue;
 	bool m_isRunning = false;
+	bool m_forceStop = false;
 	unsigned int m_tasksLeft = 0;
 	std::mutex m_mutex;
 	std::condition_variable m_condition;

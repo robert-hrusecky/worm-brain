@@ -39,7 +39,7 @@ template <typename T> bool ThreadPool<T>::isRunning() {
 	return m_isRunning;
 }
 
-template <typename T> void ThreadPool<T>::stop()
+template <typename T> void ThreadPool<T>::stop(bool force)
 {
 	{
 		std::lock_guard<std::mutex> locker(m_mutex);
@@ -48,6 +48,7 @@ template <typename T> void ThreadPool<T>::stop()
 			throw std::logic_error("Threads not started yet.");
 		}
 		m_isRunning = false;
+		m_forceStop = force;
 	}
 	m_condition.notify_all();
 	for (auto& thread : m_threads)
@@ -75,7 +76,7 @@ template <typename T> void ThreadPool<T>::workerThread()
 	{
 		std::unique_lock<std::mutex> locker(m_mutex);
 		m_condition.wait(locker, [=]() { return !m_queue.empty() || !m_isRunning; });
-		if (!m_isRunning && m_queue.empty())
+		if (!m_isRunning && (m_queue.empty() || m_forceStop))
 		{
 			break;
 		}
